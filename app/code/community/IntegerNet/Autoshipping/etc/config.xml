@@ -40,6 +40,12 @@
                 <class>IntegerNet_Autoshipping_Model</class>
             </autoshipping>
         </models>
+
+        <blocks>
+            <autoshipping>
+                <class>IntegerNet_Autoshipping_Block</class>
+            </autoshipping>
+        </blocks>
     </global>
     <frontend>
         <events>
@@ -131,4 +137,26 @@
             </resources>
         </acl>
     </adminhtml>
+
+    <frontend>
+        <translate>
+            <modules>
+                <IntegerNet_Autoshipping>
+                    <files>
+                        <default>IntegerNet_Autoshipping.csv</default>
+                    </files>
+                </IntegerNet_Autoshipping>
+            </modules>
+        </translate>
+
+        <routers>
+            <autoshipping>
+                <use>standard</use>
+                <args>
+                    <module>IntegerNet_Autoshipping</module>
+                    <frontName>autoshipping</frontName>
+                </args>
+            </autoshipping>
+        </routers>
+    </frontend>
 </config>

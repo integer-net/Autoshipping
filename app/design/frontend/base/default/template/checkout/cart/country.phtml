@@ -1,0 +1,11 @@
+<?php /** @var $this IntegerNet_Autoshipping_Block_Country */ ?>
+
+<?php echo $this->__('Shipping cost in', $this->getShippingCostPageUrl()) ?>
+
+<?php echo $this->getCountryHtmlSelect($this->getSelectedCountryId(), 'country_id', 'autoshipping_country') ?>
+
+<script type="text/javascript">
+    $('autoshipping_country').observe('change', function() {
+        window.location = '<?php echo $this->getUrl('autoshipping/country/select') ?>?country_id=' + $F('autoshipping_country');
+    })
+</script>
