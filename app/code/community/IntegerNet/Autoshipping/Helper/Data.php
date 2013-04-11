@@ -1,11 +1,12 @@
 <?php
 
 /**
- * PRWD Auto Shipping Module
+ * Auto Shipping Module
  *
  * NOTICE OF LICENSE
  *
-  Copyright (C) 2009 PRWD (http://www.prwd.co.uk)
+    Copyright (C) 2009 PRWD (http://www.prwd.co.uk)
+    Copyright (C) 2013 integer_net GmbH (http://www.integer-net.de)
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
