@@ -40,14 +40,6 @@
                 <class>IntegerNet_Autoshipping_Model</class>
             </autoshipping>
         </models>
-
-        <cache>
-            <types>
-                <checkout_quote>
-                    <label>Shopping Cart data</label>
-                </checkout_quote>
-            </types>
-        </cache>
     </global>
     <frontend>
         <events>
@@ -69,6 +61,33 @@
                     </autoshipping>
                 </observers>
             </controller_action_postdispatch_checkout_cart_add>
+            <controller_action_predispatch_checkout_cart_index>
+                <observers>
+                    <autoshipping>
+                        <type>singleton</type>
+                        <class>autoshipping/observer</class>
+                        <method>addShipping</method>
+                    </autoshipping>
+                </observers>
+            </controller_action_predispatch_checkout_cart_index>
+            <controller_action_postdispatch_sales_order_reorder>
+                <observers>
+                    <autoshipping>
+                        <type>singleton</type>
+                        <class>autoshipping/observer</class>
+                        <method>addShipping</method>
+                    </autoshipping>
+                </observers>
+            </controller_action_postdispatch_sales_order_reorder>
+            <controller_action_postdispatch_checkout_cart_delete>
+                <observers>
+                    <autoshipping>
+                        <type>singleton</type>
+                        <class>autoshipping/observer</class>
+                        <method>addShipping</method>
+                    </autoshipping>
+                </observers>
+            </controller_action_postdispatch_checkout_cart_delete>
             <controller_action_predispatch>
                 <observers>
                     <autoshipping>
@@ -91,6 +110,7 @@
                 </IntegerNet_Autoshipping>
             </modules>
         </translate>
+
         <acl>
             <resources>
                 <admin>
@@ -111,12 +131,4 @@
             </resources>
         </acl>
     </adminhtml>
-
-    <default>
-        <autoshipping>
-            <settings>
-                <enabled>0</enabled>
-            </settings>
-        </autoshipping>
-    </default>
 </config>

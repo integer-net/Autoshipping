@@ -28,6 +28,9 @@ class IntegerNet_Autoshipping_Model_Observer
 	 * @param $observer Varien_Event_Observer $observer
      * @event controller_action_postdispatch_checkout_cart_updatePost
      * @event controller_action_postdispatch_checkout_cart_add
+     * @event controller_action_predispatch_checkout_cart_index
+     * @event controller_action_postdispatch_sales_order_reorder
+     * @event controller_action_postdispatch_checkout_cart_delete
 	*/
 	public function addShipping($observer)
 	{
