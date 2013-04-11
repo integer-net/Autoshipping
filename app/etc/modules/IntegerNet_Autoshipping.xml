@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+    <modules>
+        <IntegerNet_Autoshipping>
+            <active>true</active>
+            <codePool>community</codePool>
+        </IntegerNet_Autoshipping>
+    </modules>
+</config>
