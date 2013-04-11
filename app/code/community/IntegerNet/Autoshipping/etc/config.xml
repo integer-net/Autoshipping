@@ -103,6 +103,15 @@
                     </autoshipping>
                 </observers>
             </controller_action_predispatch>
+            <core_block_abstract_to_html_before>
+                <observers>
+                    <autoshipping>
+                        <type>singleton</type>
+                        <class>autoshipping/observer</class>
+                        <method>beforeBlockToHtml</method>
+                    </autoshipping>
+                </observers>
+            </core_block_abstract_to_html_before>
         </events>
     </frontend>
 

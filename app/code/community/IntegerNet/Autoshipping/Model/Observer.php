@@ -93,6 +93,28 @@ class IntegerNet_Autoshipping_Model_Observer
     }
 
     /**
+     * @param Varien_Event_Observer $observer
+     * @event core_block_abstract_to_html_before
+     */
+    public function beforeBlockToHtml($observer)
+    {
+        $block = $observer->getBlock();
+
+        if ($block instanceof Mage_Tax_Block_Checkout_Shipping) {
+            if (Mage::app()->getRequest()->getControllerName() != 'cart') {
+                return;
+            }
+            if (sizeof(explode(',', Mage::getStoreConfig('general/country/allow'))) <= 1) {
+                return;
+            }
+
+            $block->getTotal()->setTitle(
+                $block->getLayout()->createBlock('autoshipping/country', 'checkout_cart_country_select')->toHtml()
+            );
+        }
+    }
+
+    /**
      * @return Mage_Checkout_Model_Session
      */
     protected function _getCheckoutSession()
