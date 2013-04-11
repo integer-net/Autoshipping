@@ -168,4 +168,12 @@
             </autoshipping>
         </routers>
     </frontend>
+
+    <default>
+        <autoshipping>
+            <settings>
+                <show_country_selection_in_cart>1</show_country_selection_in_cart>
+            </settings>
+        </autoshipping>
+    </default>
 </config>

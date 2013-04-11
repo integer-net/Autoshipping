@@ -34,32 +34,30 @@ class IntegerNet_Autoshipping_Model_Observer
      */
     public function addShipping($observer)
     {
-        if (Mage::getStoreConfig('autoshipping/settings/enabled')) {
+        if (Mage::getStoreConfigFlag('autoshipping/settings/enabled')) {
             if (!($country = $this->_getCoreSession()->getAutoShippingCountry())) {
                 $country = Mage::getStoreConfig('autoshipping/settings/country_id');
                 $this->_getCoreSession()->setAutoShippingCountry($country);
             }
 
             $quote = $this->_getCheckoutSession()->getQuote();
-            $quote->getShippingAddress()
-                ->setCountryId($country)
-                ->setCollectShippingRates(true);
+            $shippingAddress = $quote->getShippingAddress();
 
-            $quote
-                ->getShippingAddress()->collectShippingRates();
+            $shippingAddress->setCountryId($country);
+            $shippingAddress->setCollectShippingRates(true);
 
-            $rates = $quote
-                ->getShippingAddress()->getGroupedAllShippingRates();
+            $shippingAddress->collectShippingRates();
+
+            $rates = $shippingAddress->getGroupedAllShippingRates();
 
             if (count($rates)) {
                 $topRate = reset($rates);
                 $code = $topRate[0]->code;
 
                 try {
-                    $quote->getShippingAddress()
-                        ->setShippingMethod($code);
+                    $shippingAddress->setShippingMethod($code);
 
-                    $quote->save();
+                    //$quote->save();
 
                     $this->_getCheckoutSession()->resetCheckout();
 
@@ -82,7 +80,7 @@ class IntegerNet_Autoshipping_Model_Observer
      */
     public function checkCountry($observer)
     {
-        if (Mage::getStoreConfig('autoshipping/settings/enabled')) {
+        if (Mage::getStoreConfigFlag('autoshipping/settings/enabled')) {
             $country = Mage::getStoreConfig('autoshipping/settings/country_id');
             $sessionCountry = $this->_getCoreSession()->getAutoShippingCountry();
 
@@ -93,6 +91,8 @@ class IntegerNet_Autoshipping_Model_Observer
     }
 
     /**
+     * Show dropdown for country selection in cart before shipping cost
+     *
      * @param Varien_Event_Observer $observer
      * @event core_block_abstract_to_html_before
      */
@@ -101,13 +101,22 @@ class IntegerNet_Autoshipping_Model_Observer
         $block = $observer->getBlock();
 
         if ($block instanceof Mage_Tax_Block_Checkout_Shipping) {
+
+            if (!Mage::getStoreConfigFlag('autoshipping/settings/show_country_selection_in_cart')) {
+                return;
+            }
+
+            // show only on cart
             if (Mage::app()->getRequest()->getControllerName() != 'cart') {
                 return;
             }
+
+            // don't display if only 1 country allowed
             if (sizeof(explode(',', Mage::getStoreConfig('general/country/allow'))) <= 1) {
                 return;
             }
 
+            // replace total title
             $block->getTotal()->setTitle(
                 $block->getLayout()->createBlock('autoshipping/country', 'checkout_cart_country_select')->toHtml()
             );
