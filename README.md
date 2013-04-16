@@ -48,8 +48,8 @@ Any contribution is highly appreciated. The best way to contribute code is to op
 Developer
 ---------
 Andreas von Studnitz, integer_net GmbH
-[http://www.firstname-lastname.com](http://www.firstname-lastname.com)  
-[@FirstNameLastName](https://twitter.com/FirstNameLastName)
+[http://www.integer-net.de](http://www.integer-net.de)
+[@integer_net](https://twitter.com/integer_net)
 
 Licence
 -------
