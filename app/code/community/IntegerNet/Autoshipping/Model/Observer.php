@@ -43,6 +43,9 @@ class IntegerNet_Autoshipping_Model_Observer
 
             $quote = $this->_getCheckoutSession()->getQuote();
             $shippingAddress = $quote->getShippingAddress();
+            if($shippingAddress->getShippingMethod()){
+                return $this; //don't override a method that was previously set
+            }
 
             $shippingAddress->setCountryId($country);
             $shippingAddress->setCollectShippingRates(true);
@@ -101,11 +104,11 @@ class IntegerNet_Autoshipping_Model_Observer
     {
         $block = $observer->getBlock();
 
-        if ($block instanceof Mage_Tax_Block_Checkout_Shipping) {
+        if (!Mage::getStoreConfigFlag('autoshipping/settings/show_country_selection_in_cart')) {
+            return;
+        }
 
-            if (!Mage::getStoreConfigFlag('autoshipping/settings/show_country_selection_in_cart')) {
-                return;
-            }
+        if ($block instanceof Mage_Tax_Block_Checkout_Shipping) {
 
             // show only on cart
             if (Mage::app()->getRequest()->getControllerName() != 'cart') {
