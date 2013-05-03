@@ -43,8 +43,8 @@ class IntegerNet_Autoshipping_Model_Observer
 
             $quote = $this->_getCheckoutSession()->getQuote();
             $shippingAddress = $quote->getShippingAddress();
-            if($shippingAddress->getShippingMethod()){
-                return $this; //don't override a method that was previously set
+            if($shippingAddress->getShippingMethod() && $shippingAddress->getCountryId() == $this->_getCoreSession()->getAutoShippingCountry()){
+                return; //don't override a method that was previously set
             }
 
             $shippingAddress->setCountryId($country);
