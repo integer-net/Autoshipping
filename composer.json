@@ -1,0 +1,15 @@
+{
+    "name":"integer-net/autoshipping",
+    "type":"magento-module",
+    "license":"OSL-3.0",
+    "homepage":"https://github.com/integer-net/Autoshipping",
+    "description":"Provide shipping costs in Magento Cart, plus the ability to change the country there",
+    "authors":[
+        {
+            "name":"Andreas von Studnitz"
+        }
+    ],
+    "require":{
+        "magento-hackathon/magento-composer-installer":"*"
+    }
+}
