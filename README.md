@@ -4,7 +4,7 @@ Allows you to display shipping costs in cart and change the country for which th
 
 Facts
 -----
-- version: 0.1.0
+- version: 0.2.0
 - extension key: IntegerNet_Autoshipping
 - [extension on GitHub](https://github.com/integer-net/Autoshipping)
 - [direct download link](https://github.com/integer-net/Autoshipping/archive/master.zip)
