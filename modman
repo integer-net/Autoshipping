@@ -1,4 +1,4 @@
-app/code/community/IntegerNet/Autoshipping	app/code/community/IntegerNet/Autoshipping
-app/etc/modules/IntegerNet_Autoshipping.xml	app/etc/modules/IntegerNet_Autoshipping.xml
-app/design/frontend/base/default/template/checkout/cart/country.phtml app/design/frontend/base/default/template/checkout/cart/country.phtml
-app/locale/de_DE/IntegerNet_Autoshipping.csv	app/locale/de_DE/IntegerNet_Autoshipping.csv
+app/code/community/IntegerNet/Autoshipping	                            app/code/community/IntegerNet/Autoshipping
+app/etc/modules/IntegerNet_Autoshipping.xml	                            app/etc/modules/IntegerNet_Autoshipping.xml
+app/design/frontend/base/default/template/checkout/cart/country.phtml   app/design/frontend/base/default/template/checkout/cart/country.phtml
+app/locale/de_DE/IntegerNet_Autoshipping.csv	                        app/locale/de_DE/IntegerNet_Autoshipping.csv
