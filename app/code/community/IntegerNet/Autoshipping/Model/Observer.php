@@ -1,39 +1,22 @@
 <?php
-
 /**
- * Auto Shipping Module
+ * integer_net Autoshipping Module
  *
- * NOTICE OF LICENSE
- *
-    Copyright (C) 2009 PRWD (http://www.prwd.co.uk)
-    Copyright (C) 2013 integer_net GmbH (http://www.integer-net.de)
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
- */
+ * @category   IntegerNet
+ * @package    IntegerNet_Autoshipping
+ * @copyright  Copyright (c) 2013 integer_net GmbH (http://www.integer-net.de/)
+ * @license    http://opensource.org/licenses/gpl-3.0 GNU General Public License, version 3 (GPLv3)
+ * @author     Andreas von Studnitz <avs@integer-net.de>
+ * @author     PRWD (http://www.prwd.co.uk)
+ * */
 
 class IntegerNet_Autoshipping_Model_Observer
 {
     /**
      * @param Varien_Event_Observer $observer
-     * @event controller_action_postdispatch_checkout_cart_updatePost
-     * @event controller_action_postdispatch_checkout_cart_add
      * @event controller_action_predispatch_checkout_cart_index
-     * @event controller_action_postdispatch_sales_order_reorder
-     * @event controller_action_postdispatch_checkout_cart_delete
      */
-    public function addShipping($observer)
+    public function addShipping(Varien_Event_Observer $observer)
     {
         if (Mage::getStoreConfigFlag('autoshipping/settings/enabled')) {
             if (!($country = $this->_getCoreSession()->getAutoShippingCountry())) {
@@ -42,6 +25,12 @@ class IntegerNet_Autoshipping_Model_Observer
             }
 
             $quote = $this->_getCheckoutSession()->getQuote();
+
+            $billingAddress = $quote->getBillingAddress();
+            if (!$billingAddress->getCountryId()) {
+                $billingAddress->setCountryId($country);
+            }
+
             $shippingAddress = $quote->getShippingAddress();
             if($shippingAddress->getShippingMethod() && $shippingAddress->getCountryId() == $this->_getCoreSession()->getAutoShippingCountry()){
                 return; //don't override a method that was previously set
@@ -74,22 +63,6 @@ class IntegerNet_Autoshipping_Model_Observer
                     );
                 }
 
-            }
-        }
-    }
-
-    /**
-     * @param Varien_Event_Observer $observer
-     * @event controller_action_predispatch
-     */
-    public function checkCountry($observer)
-    {
-        if (Mage::getStoreConfigFlag('autoshipping/settings/enabled')) {
-            $country = Mage::getStoreConfig('autoshipping/settings/country_id');
-            $sessionCountry = $this->_getCoreSession()->getAutoShippingCountry();
-
-            if ($country != $sessionCountry) {
-                $this->addShipping($observer);
             }
         }
     }
