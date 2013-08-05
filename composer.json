@@ -1,5 +1,5 @@
 {
-   "name": "integer_net/IntegerNet_Autoshipping",
+   "name": "integer_net/autoshipping",
    "type": "magento-module",
    "description": "Provide shipping costs in Magento Cart, plus the ability to change the country there",
    "homepage": "https://github.com/integer-net/Autoshipping",
