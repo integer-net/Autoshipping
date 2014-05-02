@@ -39,6 +39,10 @@ class IntegerNet_Autoshipping_Model_Observer
             $shippingAddress->setCountryId($country);
             $shippingAddress->setCollectShippingRates(true);
 
+            if (!$shippingAddress->getFreeMethodWeight()) {
+                $shippingAddress->setFreeMethodWeight($shippingAddress->getWeight());
+            }
+
             $shippingAddress->collectShippingRates();
 
             $rates = $shippingAddress->getGroupedAllShippingRates();
