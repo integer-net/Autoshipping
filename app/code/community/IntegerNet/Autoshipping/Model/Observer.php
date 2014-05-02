@@ -44,25 +44,35 @@ class IntegerNet_Autoshipping_Model_Observer
             $rates = $shippingAddress->getGroupedAllShippingRates();
 
             if (count($rates)) {
-                $topRate = reset($rates);
-                $code = $topRate[0]->code;
 
-                try {
-                    $shippingAddress->setShippingMethod($code);
+                $topRates = reset($rates);
+                foreach($topRates as $topRate) {
 
-                    $quote->save();
+                    /** @var Mage_Sales_Model_Quote_Address_Rate $topRate */
+                    $code = $topRate->code;
 
-                    $this->_getCheckoutSession()->resetCheckout();
+                    if (in_array($topRate->getCarrier(), explode(',', Mage::getStoreConfig('autoshipping/settings/ignore_shipping_methods')))) {
+                        continue;
+                    }
 
-                } catch (Mage_Core_Exception $e) {
-                    $this->_getCheckoutSession()->addError($e->getMessage());
+                    try {
+                        $shippingAddress->setShippingMethod($code);
+
+                        $quote->save();
+
+                        $this->_getCheckoutSession()->resetCheckout();
+
+                    } catch (Mage_Core_Exception $e) {
+                        $this->_getCheckoutSession()->addError($e->getMessage());
+                    }
+                    catch (Exception $e) {
+                        $this->_getCheckoutSession()->addException(
+                            $e, Mage::helper('checkout')->__('Load customer quote error')
+                        );
+                    }
+
+                    return;
                 }
-                catch (Exception $e) {
-                    $this->_getCheckoutSession()->addException(
-                        $e, Mage::helper('checkout')->__('Load customer quote error')
-                    );
-                }
-
             }
         }
     }
