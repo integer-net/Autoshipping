@@ -4,7 +4,7 @@ Allows you to display shipping costs in cart and change the country for which th
 
 Facts
 -----
-- version: 0.2.0
+- version: 0.3.0
 - extension key: IntegerNet_Autoshipping
 - [extension on GitHub](https://github.com/integer-net/Autoshipping)
 - [direct download link](https://github.com/integer-net/Autoshipping/archive/master.zip)
@@ -16,6 +16,7 @@ It displays the shipping costs on the shopping cart page even if you haven't ent
 target country from the configuration.
 If there is more than one allowed country, a dropdown is available on the shopping cart page which allow the
 customer to change the target country.
+You can now exclude shipping methods by configuration (useful for pickup for example)
 
 Requirements
 ------------
@@ -47,9 +48,9 @@ Any contribution is highly appreciated. The best way to contribute code is to op
 
 Developer
 ---------
-Andreas von Studnitz, integer_net GmbH
-[http://www.integer-net.de](http://www.integer-net.de)
-[@integer_net](https://twitter.com/integer_net)
+Andreas von Studnitz, [integer_net GmbH](http://www.integer-net.de)
+
+Twitter: [@integer_net](https://twitter.com/integer_net)
 
 Licence
 -------
@@ -57,4 +58,4 @@ Licence
 
 Copyright
 ---------
-(c) 2013 integer_net GmbH
+(c) 2014 integer_net GmbH
