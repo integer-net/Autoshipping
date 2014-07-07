@@ -45,6 +45,8 @@ class IntegerNet_Autoshipping_Model_Observer
 
             $shippingAddress->collectShippingRates();
 
+            $quote->collectTotals();
+
             $rates = $shippingAddress->getGroupedAllShippingRates();
 
             if (count($rates)) {
