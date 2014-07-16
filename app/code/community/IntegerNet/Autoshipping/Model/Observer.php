@@ -25,6 +25,9 @@ class IntegerNet_Autoshipping_Model_Observer
             }
 
             $quote = $this->_getCheckoutSession()->getQuote();
+            if (0 == $quote->getItemsCount()) {
+                return;
+            }
 
             $billingAddress = $quote->getBillingAddress();
             if (!$billingAddress->getCountryId()) {
