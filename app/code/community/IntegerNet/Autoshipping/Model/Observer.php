@@ -18,65 +18,69 @@ class IntegerNet_Autoshipping_Model_Observer
      */
     public function addShipping(Varien_Event_Observer $observer)
     {
-        if (Mage::getStoreConfigFlag('autoshipping/settings/enabled')) {
-            if (!($country = $this->_getCoreSession()->getAutoShippingCountry())) {
-                $country = Mage::getStoreConfig('autoshipping/settings/country_id');
-                $this->_getCoreSession()->setAutoShippingCountry($country);
-            }
+        if (! Mage::getStoreConfigFlag('autoshipping/settings/enabled')) {
+            return;
+        }
+        if (!($country = $this->_getCoreSession()->getAutoShippingCountry())) {
+            $country = Mage::getStoreConfig('autoshipping/settings/country_id');
+            $this->_getCoreSession()->setAutoShippingCountry($country);
+        }
 
-            $quote = $this->_getCheckoutSession()->getQuote();
+        $quote = $this->_getCheckoutSession()->getQuote();
+        if (! $quote->hasItems()) {
+            return;
+        }
 
-            $billingAddress = $quote->getBillingAddress();
-            if (!$billingAddress->getCountryId()) {
-                $billingAddress->setCountryId($country);
-            }
+        $billingAddress = $quote->getBillingAddress();
+        if (!$billingAddress->getCountryId()) {
+            $billingAddress->setCountryId($country);
+        }
 
-            $shippingAddress = $quote->getShippingAddress();
-            if($shippingAddress->getShippingMethod() && $shippingAddress->getCountryId() == $this->_getCoreSession()->getAutoShippingCountry()){
-                return; //don't override a method that was previously set
-            }
+        $shippingAddress = $quote->getShippingAddress();
+        if($shippingAddress->getShippingMethod() && $shippingAddress->getCountryId() == $this->_getCoreSession()->getAutoShippingCountry()){
+            return; //don't override a method that was previously set
+        }
 
-            $shippingAddress->setCountryId($country);
-            $shippingAddress->setCollectShippingRates(true);
+        $shippingAddress->setCountryId($country);
+        $shippingAddress->setCollectShippingRates(true);
 
-            if (!$shippingAddress->getFreeMethodWeight()) {
-                $shippingAddress->setFreeMethodWeight($shippingAddress->getWeight());
-            }
+        if (!$shippingAddress->getFreeMethodWeight()) {
+            $shippingAddress->setFreeMethodWeight($shippingAddress->getWeight());
+        }
 
-            $shippingAddress->collectShippingRates();
+        $shippingAddress->collectShippingRates();
 
-            $rates = $shippingAddress->getGroupedAllShippingRates();
+        $rates = $shippingAddress->getGroupedAllShippingRates();
 
-            if (count($rates)) {
+        if (count($rates)) {
 
-                $topRates = reset($rates);
-                foreach($topRates as $topRate) {
+            $topRates = reset($rates);
+            foreach($topRates as $topRate) {
 
-                    /** @var Mage_Sales_Model_Quote_Address_Rate $topRate */
-                    $code = $topRate->code;
+                /** @var Mage_Sales_Model_Quote_Address_Rate $topRate */
+                $code = $topRate->code;
 
-                    if (in_array($topRate->getCarrier(), explode(',', Mage::getStoreConfig('autoshipping/settings/ignore_shipping_methods')))) {
-                        continue;
-                    }
-
-                    try {
-                        $shippingAddress->setShippingMethod($code);
-
-                        $quote->save();
-
-                        $this->_getCheckoutSession()->resetCheckout();
-
-                    } catch (Mage_Core_Exception $e) {
-                        $this->_getCheckoutSession()->addError($e->getMessage());
-                    }
-                    catch (Exception $e) {
-                        $this->_getCheckoutSession()->addException(
-                            $e, Mage::helper('checkout')->__('Load customer quote error')
-                        );
-                    }
-
-                    return;
+                if (in_array($topRate->getCarrier(), explode(',', Mage::getStoreConfig('autoshipping/settings/ignore_shipping_methods')))) {
+                    continue;
                 }
+
+                try {
+                    $shippingAddress->setShippingMethod($code);
+
+                    $quote->save();
+
+                    $this->_getCheckoutSession()->resetCheckout();
+
+                } catch (Mage_Core_Exception $e) {
+                    $this->_getCheckoutSession()->addError($e->getMessage());
+                }
+                catch (Exception $e) {
+                    $this->_getCheckoutSession()->addException(
+                        $e, Mage::helper('checkout')->__('Load customer quote error')
+                    );
+                }
+
+                return;
             }
         }
     }
@@ -91,7 +95,7 @@ class IntegerNet_Autoshipping_Model_Observer
     {
         $block = $observer->getBlock();
 
-        if (!Mage::getStoreConfigFlag('autoshipping/settings/show_country_selection_in_cart')) {
+        if (! Mage::getStoreConfigFlag('autoshipping/settings/show_country_selection_in_cart')) {
             return;
         }
 
