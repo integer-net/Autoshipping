@@ -38,7 +38,16 @@
     </global>
     <frontend>
         <events>
-            <controller_action_predispatch_checkout_cart_index>
+            <checkout_cart_save_before>
+                <observers>
+                    <autoshipping>
+                        <type>singleton</type>
+                        <class>autoshipping/observer</class>
+                        <method>prepareShippingAddress</method>
+                    </autoshipping>
+                </observers>
+            </checkout_cart_save_before>
+            <checkout_cart_save_after>
                 <observers>
                     <autoshipping>
                         <type>singleton</type>
@@ -46,7 +55,7 @@
                         <method>addShipping</method>
                     </autoshipping>
                 </observers>
-            </controller_action_predispatch_checkout_cart_index>
+            </checkout_cart_save_after>
             <core_block_abstract_to_html_before>
                 <observers>
                     <autoshipping>

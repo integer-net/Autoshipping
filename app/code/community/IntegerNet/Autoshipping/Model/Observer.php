@@ -12,23 +12,26 @@
 
 class IntegerNet_Autoshipping_Model_Observer
 {
+    protected $_methodManuallyChanged;
+
     /**
+     * Set configured country
+     *
      * @param Varien_Event_Observer $observer
-     * @event controller_action_predispatch_checkout_cart_index
+     * @event checkout_cart_save_before
      */
-    public function addShipping(Varien_Event_Observer $observer)
+    public function prepareShippingAddress(Varien_Event_Observer $observer)
     {
         if (! Mage::getStoreConfigFlag('autoshipping/settings/enabled')) {
+            return;
+        }
+        $quote = $this->_getCheckoutSession()->getQuote();
+        if (! $quote->hasItems()) {
             return;
         }
         if (!($country = $this->_getCoreSession()->getAutoShippingCountry())) {
             $country = Mage::getStoreConfig('autoshipping/settings/country_id');
             $this->_getCoreSession()->setAutoShippingCountry($country);
-        }
-
-        $quote = $this->_getCheckoutSession()->getQuote();
-        if (! $quote->hasItems()) {
-            return;
         }
 
         $billingAddress = $quote->getBillingAddress();
@@ -37,19 +40,33 @@ class IntegerNet_Autoshipping_Model_Observer
         }
 
         $shippingAddress = $quote->getShippingAddress();
-
         $shippingAddress->setCountryId($country);
-        $shippingAddress->setCollectShippingRates(true);
 
         if (!$shippingAddress->getFreeMethodWeight()) {
             $shippingAddress->setFreeMethodWeight($shippingAddress->getWeight());
         }
 
-        $isMethodManuallyChanged = $this->_isMethodManuallyChanged($shippingAddress);
+        $this->_methodManuallyChanged = $this->_isMethodManuallyChanged($shippingAddress);
+    }
+    /**
+     * Set shipping method
+     * 
+     * @param Varien_Event_Observer $observer
+     * @event checkout_cart_save_after
+     */
+    public function addShipping(Varien_Event_Observer $observer)
+    {
+        if (! Mage::getStoreConfigFlag('autoshipping/settings/enabled')) {
+            return;
+        }
+        $quote = $this->_getCheckoutSession()->getQuote();
+        if (! $quote->hasItems()) {
+            return;
+        }
 
-        $quote->collectTotals();
+        $shippingAddress = $quote->getShippingAddress();
 
-        if($isMethodManuallyChanged && $shippingAddress->getShippingMethod()) {
+        if($this->_methodManuallyChanged && $shippingAddress->getShippingMethod()) {
             // if the manually selected shipping method is still available, do nothing!
             return;
         }
@@ -62,20 +79,21 @@ class IntegerNet_Autoshipping_Model_Observer
             foreach($topRates as $topRate) {
 
                 /** @var Mage_Sales_Model_Quote_Address_Rate $topRate */
-                $code = $topRate->code;
 
                 if (in_array($topRate->getCarrier(), explode(',', Mage::getStoreConfig('autoshipping/settings/ignore_shipping_methods')))) {
                     continue;
                 }
 
                 try {
-                    $shippingAddress->setShippingMethod($code);
+                    $shippingAddress->setShippingMethod($topRate->getCode());
+                    $shippingDescription = $topRate->getCarrierTitle() . ' - ' . $topRate->getMethodTitle();
+                    $shippingAddress->setShippingDescription(trim($shippingDescription, ' -'));
 
                     $quote->save();
 
                     $this->_getCheckoutSession()->resetCheckout();
 
-                    $this->_getCheckoutSession()->setAutoShippingMethod($code);
+                    $this->_getCheckoutSession()->setAutoShippingMethod($topRate->getCode());
 
                 } catch (Mage_Core_Exception $e) {
                     $this->_getCheckoutSession()->addError($e->getMessage());
