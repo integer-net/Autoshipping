@@ -45,10 +45,13 @@ class IntegerNet_Autoshipping_Model_Observer
             $shippingAddress->setFreeMethodWeight($shippingAddress->getWeight());
         }
 
-        $shippingAddress->collectShippingRates();
+        $isMethodManuallyChanged = $this->_isMethodManuallyChanged($shippingAddress);
 
-        if($shippingAddress->getShippingMethod() && $shippingAddress->getCountryId() == $this->_getCoreSession()->getAutoShippingCountry()){
-            return; //don't override a method that was previously set
+        $quote->collectTotals();
+
+        if($isMethodManuallyChanged && $shippingAddress->getShippingMethod()) {
+            // if the manually selected shipping method is still available, do nothing!
+            return;
         }
 
         $rates = $shippingAddress->getGroupedAllShippingRates();
@@ -71,6 +74,8 @@ class IntegerNet_Autoshipping_Model_Observer
                     $quote->save();
 
                     $this->_getCheckoutSession()->resetCheckout();
+
+                    $this->_getCheckoutSession()->setAutoShippingMethod($code);
 
                 } catch (Mage_Core_Exception $e) {
                     $this->_getCheckoutSession()->addError($e->getMessage());
@@ -133,5 +138,16 @@ class IntegerNet_Autoshipping_Model_Observer
     protected function _getCoreSession()
     {
         return Mage::getSingleton('core/session');
+    }
+
+    /**
+     * @param $shippingAddress
+     * @return bool
+     */
+    protected function _isMethodManuallyChanged($shippingAddress)
+    {
+        return $shippingAddress->getShippingMethod()
+        && ($shippingAddress->getShippingMethod() != $this->_getCheckoutSession()->getAutoShippingMethod())
+        && ($shippingAddress->getCountryId() == $this->_getCoreSession()->getAutoShippingCountry());
     }
 }
