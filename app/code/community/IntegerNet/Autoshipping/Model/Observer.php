@@ -37,9 +37,6 @@ class IntegerNet_Autoshipping_Model_Observer
         }
 
         $shippingAddress = $quote->getShippingAddress();
-        if($shippingAddress->getShippingMethod() && $shippingAddress->getCountryId() == $this->_getCoreSession()->getAutoShippingCountry()){
-            return; //don't override a method that was previously set
-        }
 
         $shippingAddress->setCountryId($country);
         $shippingAddress->setCollectShippingRates(true);
@@ -49,6 +46,10 @@ class IntegerNet_Autoshipping_Model_Observer
         }
 
         $shippingAddress->collectShippingRates();
+
+        if($shippingAddress->getShippingMethod() && $shippingAddress->getCountryId() == $this->_getCoreSession()->getAutoShippingCountry()){
+            return; //don't override a method that was previously set
+        }
 
         $rates = $shippingAddress->getGroupedAllShippingRates();
 
