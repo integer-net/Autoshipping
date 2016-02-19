@@ -65,6 +65,7 @@ class IntegerNet_Autoshipping_Model_Observer
         }
 
         $shippingAddress = $quote->getShippingAddress();
+        $shippingAddress->setCollectShippingRates(true)->collectShippingRates();
 
         if($this->_methodManuallyChanged && $shippingAddress->getShippingMethod()) {
             // if the manually selected shipping method is still available, do nothing!
@@ -87,6 +88,8 @@ class IntegerNet_Autoshipping_Model_Observer
                 try {
                     $shippingAddress->setShippingMethod($topRate->getCode());
                     $shippingDescription = $topRate->getCarrierTitle() . ' - ' . $topRate->getMethodTitle();
+                    $shippingAddress->setShippingAmount($topRate->getPrice());
+                    $shippingAddress->setBaseShippingAmount($topRate->getPrice());
                     $shippingAddress->setShippingDescription(trim($shippingDescription, ' -'));
 
                     $quote->save();
