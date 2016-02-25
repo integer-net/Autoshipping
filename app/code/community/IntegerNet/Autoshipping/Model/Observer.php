@@ -34,19 +34,30 @@ class IntegerNet_Autoshipping_Model_Observer
             $this->_getCoreSession()->setAutoShippingCountry($country);
         }
 
-        $billingAddress = $quote->getBillingAddress();
-        if (!$billingAddress->getCountryId()) {
-            $billingAddress->setCountryId($country);
+        $quoteShippingAddress = $quote->getShippingAddress();
+        $quoteShippingAddress->setCountryId($country);
+
+        /** @var Mage_Sales_Model_Quote_Address $quoteBillingAddress */
+        $quoteBillingAddress = $quote->getBillingAddress();
+        if (!$quoteBillingAddress->getCountryId()) {
+            $quoteBillingAddress->setCountryId($country);
+            if ($this->_getCustomerSession()->isLoggedIn()) {
+                /** @var Mage_Customer_Model_Address $customerBillingAddress */
+                if ($customerBillingAddress = $this->_getCustomerSession()->getCustomer()->getDefaultBillingAddress()) {
+                    $quoteBillingAddress->importCustomerAddress($customerBillingAddress);
+                }
+                /** @var Mage_Customer_Model_Address $customerBillingAddress */
+                if ($customerShippingAddress = $this->_getCustomerSession()->getCustomer()->getDefaultShippingAddress()) {
+                    $quoteShippingAddress->importCustomerAddress($customerShippingAddress);
+                }
+            }
         }
 
-        $shippingAddress = $quote->getShippingAddress();
-        $shippingAddress->setCountryId($country);
-
-        if (!$shippingAddress->getFreeMethodWeight()) {
-            $shippingAddress->setFreeMethodWeight($shippingAddress->getWeight());
+        if (!$quoteShippingAddress->getFreeMethodWeight()) {
+            $quoteShippingAddress->setFreeMethodWeight($quoteShippingAddress->getWeight());
         }
 
-        $this->_methodManuallyChanged = $this->_isMethodManuallyChanged($shippingAddress);
+        $this->_methodManuallyChanged = $this->_isMethodManuallyChanged($quoteShippingAddress);
     }
     /**
      * Set shipping method
@@ -159,6 +170,14 @@ class IntegerNet_Autoshipping_Model_Observer
     protected function _getCoreSession()
     {
         return Mage::getSingleton('core/session');
+    }
+
+    /**
+     * @return Mage_Customer_Model_Session
+     */
+    protected function _getCustomerSession()
+    {
+        return Mage::getSingleton('customer/session');
     }
 
     /**
