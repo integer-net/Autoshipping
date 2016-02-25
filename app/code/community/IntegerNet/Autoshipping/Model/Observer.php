@@ -32,6 +32,11 @@ class IntegerNet_Autoshipping_Model_Observer
         if (!($country = $this->_getCoreSession()->getAutoShippingCountry())) {
             $country = Mage::getStoreConfig('autoshipping/settings/country_id');
             $this->_getCoreSession()->setAutoShippingCountry($country);
+
+            /** @var Mage_Customer_Model_Address $customerBillingAddress */
+            if ($customerShippingAddress = $this->_getCustomerSession()->getCustomer()->getDefaultShippingAddress()) {
+                $this->_getCoreSession()->setAutoShippingCountry($customerShippingAddress->getCountry());
+            }
         }
 
         $quoteShippingAddress = $quote->getShippingAddress();
@@ -49,6 +54,9 @@ class IntegerNet_Autoshipping_Model_Observer
                 /** @var Mage_Customer_Model_Address $customerBillingAddress */
                 if ($customerShippingAddress = $this->_getCustomerSession()->getCustomer()->getDefaultShippingAddress()) {
                     $quoteShippingAddress->importCustomerAddress($customerShippingAddress);
+                    if (Mage::helper('core')->isModuleEnabled('IntegerNet_EuropeanTax')) {
+                        Mage::register(IntegerNet_EuropeanTax_Model_Observer::VIV_PROCESSED_FLAG, false);
+                    }
                 }
             }
         }
