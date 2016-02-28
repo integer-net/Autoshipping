@@ -28,6 +28,11 @@
             <autoshipping>
                 <class>IntegerNet_Autoshipping_Model</class>
             </autoshipping>
+            <sales>
+                <rewrite>
+                    <quote_address>IntegerNet_Autoshipping_Model_Quote_Address</quote_address>
+                </rewrite>
+            </sales>
         </models>
 
         <blocks>
