@@ -70,7 +70,36 @@
                     </autoshipping>
                 </observers>
             </core_block_abstract_to_html_before>
+            <controller_action_predispatch_checkout_cart_index>
+                <observers>
+                    <autoshipping>
+                        <type>singleton</type>
+                        <class>autoshipping/observer</class>
+                        <method>controllerActionPredispatchCheckoutCartIndex</method>
+                    </autoshipping>
+                </observers>
+            </controller_action_predispatch_checkout_cart_index>
         </events>
+
+        <translate>
+            <modules>
+                <IntegerNet_Autoshipping>
+                    <files>
+                        <default>IntegerNet_Autoshipping.csv</default>
+                    </files>
+                </IntegerNet_Autoshipping>
+            </modules>
+        </translate>
+
+        <routers>
+            <autoshipping>
+                <use>standard</use>
+                <args>
+                    <module>IntegerNet_Autoshipping</module>
+                    <frontName>autoshipping</frontName>
+                </args>
+            </autoshipping>
+        </routers>
     </frontend>
 
     <adminhtml>
@@ -104,28 +133,6 @@
             </resources>
         </acl>
     </adminhtml>
-
-    <frontend>
-        <translate>
-            <modules>
-                <IntegerNet_Autoshipping>
-                    <files>
-                        <default>IntegerNet_Autoshipping.csv</default>
-                    </files>
-                </IntegerNet_Autoshipping>
-            </modules>
-        </translate>
-
-        <routers>
-            <autoshipping>
-                <use>standard</use>
-                <args>
-                    <module>IntegerNet_Autoshipping</module>
-                    <frontName>autoshipping</frontName>
-                </args>
-            </autoshipping>
-        </routers>
-    </frontend>
 
     <default>
         <autoshipping>
