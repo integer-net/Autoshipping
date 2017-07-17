@@ -39,6 +39,11 @@
             <autoshipping>
                 <class>IntegerNet_Autoshipping_Block</class>
             </autoshipping>
+            <tax>
+                <rewrite>
+                    <checkout_shipping>IntegerNet_Autoshipping_Block_Tax_Checkout_Shipping</checkout_shipping>
+                </rewrite>
+            </tax>
         </blocks>
     </global>
     <frontend>
