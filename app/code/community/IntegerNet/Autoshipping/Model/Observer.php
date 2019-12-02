@@ -40,7 +40,8 @@ class IntegerNet_Autoshipping_Model_Observer
         }
 
         $shippingAddress = $quote->getShippingAddress();
-        if (!$shippingAddress->getCountryId()) {
+        if (!$shippingAddress->getCountryId()
+            || ($country !== Mage::getStoreConfig('autoshipping/settings/country_id'))) {
             $shippingAddress->setCountryId($country);
         }
         
