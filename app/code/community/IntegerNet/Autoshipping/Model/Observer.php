@@ -40,10 +40,8 @@ class IntegerNet_Autoshipping_Model_Observer
         }
 
         $shippingAddress = $quote->getShippingAddress();
-        if (!$shippingAddress->getCountryId()) {
-            $shippingAddress->setCountryId($country);
-        }
-        
+        $shippingAddress->setCountryId($country);
+
         if (!$shippingAddress->getFreeMethodWeight()) {
             $shippingAddress->setFreeMethodWeight($shippingAddress->getWeight());
         }
