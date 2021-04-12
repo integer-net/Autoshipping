@@ -40,13 +40,16 @@ class IntegerNet_Autoshipping_Model_Observer
         }
 
         $shippingAddress = $quote->getShippingAddress();
-        $shippingAddress->setCountryId($country);
+        if ($this->_getCoreSession()->getCountryIsManuallyChangedInCart() || !$shippingAddress->getCountryId()) {
+            $shippingAddress->setCountryId($country);
+        }
 
         if (!$shippingAddress->getFreeMethodWeight()) {
             $shippingAddress->setFreeMethodWeight($shippingAddress->getWeight());
         }
 
         $this->_methodManuallyChanged = $this->_isMethodManuallyChanged($shippingAddress);
+        $this->_getCoreSession()->setCountryIsManuallyChangedInCart(false);
     }
     /**
      * Set shipping method
